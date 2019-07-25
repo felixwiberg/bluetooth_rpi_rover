@@ -5,7 +5,7 @@ CFLAGS=-I$(IDIR)
 ODIR=obj
 LDIR =../lib
 
-LIBS=-lbluetooth
+LIBS=-lbluetooth -lncurses
 
 _DEPS = 		#hej.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))

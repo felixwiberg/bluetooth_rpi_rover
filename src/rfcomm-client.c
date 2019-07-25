@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
+#include <ncurses.h>
 
 int main(int argc, char **argv)
 {
@@ -22,11 +23,35 @@ int main(int argc, char **argv)
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
     // send a message
-    if( status == 0 ) {
-        status = write(s, "hello!", 6);
+    initscr();
+    noecho();
+    curs_set(FALSE);
+    clear();
+    while(1){
+        int ch;
+        char m[2];
+        cbreak();
+        nodelay(stdscr, TRUE);
+        for (;;) {
+            if ((ch = getch()) == ERR) {
+                //printf("no response");
+            }
+            else {
+                clear();
+                printw("%c",ch);
+                if(status == 0) {
+                    m[0] = ch;
+                    m[1] = '\0';
+                    status = write(s, m, 1);
+                }
+                if(status < 0){
+                    printw("\nerror");
+                    perror("uh oh");
+                }
+            }
+        }
+        sleep(1);
     }
-
-    if( status < 0 ) perror("uh oh");
 
     close(s);
     return 0;
